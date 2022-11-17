@@ -2,7 +2,6 @@
 
 // =====================================================================
 processor_t::processor_t() {
-
 };
 
 // =====================================================================
@@ -11,7 +10,7 @@ void processor_t::allocate() {
 };
 
 // =====================================================================
-void print_trace(opcode_package_t new_instruction){
+void processor_t::print_trace(opcode_package_t new_instruction){
 	printf("opcode_operation: %d\n",new_instruction.opcode_operation);
 	printf("opcode_address: %ld\n",new_instruction.opcode_address);
 	printf("opcode_size: %d\n",new_instruction.opcode_size);
@@ -49,37 +48,27 @@ void print_trace(opcode_package_t new_instruction){
 	printf("is_predicated: %d\n",new_instruction.is_predicated);
 	printf("is_prefetch: %d\n",new_instruction.is_prefetch);
 	printf("--------------------------\n");
-
 }
 
 // =====================================================================
 void processor_t::clock() {
 
-	/// Get the next instruction from the trace
-	opcode_package_t new_instruction;
-	bool teste= orcs_engine.trace_reader->trace_fetch(&new_instruction);
-	print_trace(new_instruction);
-	teste= orcs_engine.trace_reader->trace_fetch(&new_instruction);
-	print_trace(new_instruction);
-	teste= orcs_engine.trace_reader->trace_fetch(&new_instruction);
-	print_trace(new_instruction);
+	opcode_package_t old_instruction;
+	static opcode_package_t new_instruction;
+	old_instruction=new_instruction;
 
-	if(new_instruction.opcode_operation==7){
-		teste= orcs_engine.trace_reader->trace_fetch(&new_instruction);
-		print_trace(new_instruction);
-		if(new_instruction.opcode_address!=4231689){
-			printf("PULOU\n");
-		}
-		else{
-			printf("NÃO PULOU\n");
-		}
-	}
-
-	if (teste) {
+	if (!orcs_engine.trace_reader->trace_fetch(&old_instruction)) {
 		/// If EOF
 		orcs_engine.simulator_alive = false;
+		return;
+	}
+	orcs_engine.trace_reader->trace_fetch(&new_instruction);
+
+	if(old_instruction.opcode_operation==7){
+		print_trace(new_instruction);
 	}
 
+	
 };
 
 // =====================================================================

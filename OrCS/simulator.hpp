@@ -23,7 +23,7 @@ class orcs_engine_t;
 class trace_reader_t;
 class opcode_package_t;
 class processor_t;
-
+class BTB_cell_t;
 // ============================================================================
 /// Global SINUCA_ENGINE instantiation
 // ============================================================================
@@ -127,8 +127,9 @@ enum branch_t {
 #include "./orcs_engine.hpp"
 #include "./trace_reader.hpp"
 #include "./opcode_package.hpp"
-
+#include "./BTB_cell.hpp"
 #include "./processor.hpp"
+
 
 
 

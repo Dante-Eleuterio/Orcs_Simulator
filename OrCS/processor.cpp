@@ -2,6 +2,8 @@
 
 // =====================================================================
 processor_t::processor_t() {
+	this->miss=0;
+	this->miss_counter=0;
 };
 
 // =====================================================================
@@ -9,6 +11,72 @@ void processor_t::allocate() {
 
 };
 
+int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int64_t next_address){
+	uint64_t PC = instruction.opcode_address;
+	int index = PC & 1023; //Calculate tag
+	if(branch_type!=4){
+		for(int i = 0; i < 4; i++){
+			if(BTB[index][i].opcode_address==PC){
+				BTB[index][i].last_access= orcs_engine.global_cycle;
+				return HIT;
+			}
+		}
+	}else{
+		for(int i = 0; i < 4; i++){
+			if(BTB[index][i].opcode_address==PC){ //check for hit or miss on BTB
+				BTB[index][i].last_access = orcs_engine.global_cycle;
+				if(BTB[index][i].two_bits==0 || BTB[index][i].two_bits==1){ //Predicted Not Taken
+					if(next_address == PC+instruction.opcode_size){  //If not taken Sucess
+						BTB[index][i].target_address=PC+instruction.opcode_size;
+						if(BTB[index][i].two_bits>0){
+							BTB[index][i].two_bits--;
+						}
+						return HIT;
+					}else{											//If taken Fail
+						BTB[index][i].target_address=next_address;
+						if(BTB[index][i].two_bits<3){
+							BTB[index][i].two_bits++;
+						}
+						return MISS;
+					}
+				}else{ //Predicted Taken
+					if(next_address == PC+instruction.opcode_size){  //If not taken Fail
+						BTB[index][i].target_address=PC+instruction.opcode_size;
+						if(BTB[index][i].two_bits>0){
+							BTB[index][i].two_bits--;
+						}
+						return MISS;
+					}else{											//If taken Sucess
+						BTB[index][i].target_address=next_address;
+						if(BTB[index][i].two_bits<3){
+							BTB[index][i].two_bits++;
+						}
+						return HIT;
+					}
+				}
+			}
+		}
+	}
+	//Didn't find it on BTB
+	//AQUI O PROBLEMA PROVAVELMENTE
+	int LRU=0;
+	for (int i = 1; i < 4; i++){
+		printf("1:%ld 2:%ld\n",BTB[index][LRU].last_access,BTB[index][i].last_access);
+		if(BTB[index][LRU].last_access<BTB[index][i].last_access){
+			LRU=i;
+			printf("%d\n",LRU);
+		}
+	}
+	BTB[index][LRU].last_access= orcs_engine.global_cycle;
+	BTB[index][LRU].opcode_address=PC;
+	BTB[index][LRU].two_bits=0;
+	if(branch_type==4)
+		BTB[index][LRU].target_address=PC+instruction.opcode_size;
+	else
+		BTB[index][LRU].target_address=next_address;
+	return MISS; 
+
+}
 // =====================================================================
 void processor_t::print_trace(opcode_package_t new_instruction){
 	printf("opcode_operation: %d\n",new_instruction.opcode_operation);
@@ -52,20 +120,24 @@ void processor_t::print_trace(opcode_package_t new_instruction){
 
 // =====================================================================
 void processor_t::clock() {
-
-	opcode_package_t old_instruction;
+	if(miss!=0){
+		miss--;
+		return;
+	}
+	opcode_package_t actual_instruction;
 	static opcode_package_t new_instruction;
-	old_instruction=new_instruction;
-
-	if (!orcs_engine.trace_reader->trace_fetch(&old_instruction)) {
+	actual_instruction=new_instruction;
+	if (!orcs_engine.trace_reader->trace_fetch(&new_instruction)) {
 		/// If EOF
 		orcs_engine.simulator_alive = false;
 		return;
 	}
-	orcs_engine.trace_reader->trace_fetch(&new_instruction);
 
-	if(old_instruction.opcode_operation==7){
-		print_trace(new_instruction);
+	if(actual_instruction.opcode_operation==7){
+		if(!handle_BTB(actual_instruction,actual_instruction.branch_type,new_instruction.opcode_address)){
+			miss=16;
+			miss_counter++;
+		}
 	}
 
 	
@@ -75,5 +147,7 @@ void processor_t::clock() {
 void processor_t::statistics() {
 	ORCS_PRINTF("######################################################\n");
 	ORCS_PRINTF("processor_t\n");
+	ORCS_PRINTF("TOTAL MISSES = %ld\n",miss_counter);
+	ORCS_PRINTF("TOTAL CYCLES %ld\n",orcs_engine.global_cycle);
 
 };

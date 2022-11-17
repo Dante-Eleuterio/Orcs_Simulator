@@ -8,7 +8,7 @@ class BTB_cell_t {
         uint64_t opcode_address;
         uint64_t last_access;
         uint64_t target_address;
-        short predictor;
+        short two_bits;
 		// ====================================================================
 		/// Methods
 		// ====================================================================

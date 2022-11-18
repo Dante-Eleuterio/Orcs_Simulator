@@ -14,10 +14,16 @@ void processor_t::allocate() {
 int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int64_t next_address){
 	uint64_t PC = instruction.opcode_address;
 	int index = PC & 1023; //Calculate tag
+	static long counter[4];
+	static int flag=0;
+	if(!flag){
+		memset(counter,0,sizeof(counter));
+		flag=1;
+	}
 	if(branch_type!=4){
 		for(int i = 0; i < 4; i++){
 			if(BTB[index][i].opcode_address==PC){
-				BTB[index][i].last_access= orcs_engine.global_cycle;
+				BTB[index][i].last_access = orcs_engine.global_cycle;
 				return HIT;
 			}
 		}
@@ -60,13 +66,17 @@ int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int6
 	//Didn't find it on BTB
 	//AQUI O PROBLEMA PROVAVELMENTE
 	int LRU=0;
-	for (int i = 1; i < 4; i++){
-		printf("1:%ld 2:%ld\n",BTB[index][LRU].last_access,BTB[index][i].last_access);
-		if(BTB[index][LRU].last_access<BTB[index][i].last_access){
+	for (int i = 0; i < 4; i++){
+		if(BTB[index][i].last_access==0){
 			LRU=i;
-			printf("%d\n",LRU);
+			break;
+		}
+		if(BTB[index][LRU].last_access>BTB[index][i].last_access){
+			LRU=i;
 		}
 	}
+	counter[LRU]++;
+	printf("LRU 0:%ld 1:%ld 2:%ld 3:%ld\n",counter[0],counter[1],counter[2],counter[3]);
 	BTB[index][LRU].last_access= orcs_engine.global_cycle;
 	BTB[index][LRU].opcode_address=PC;
 	BTB[index][LRU].two_bits=0;
@@ -74,7 +84,9 @@ int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int6
 		BTB[index][LRU].target_address=PC+instruction.opcode_size;
 	else
 		BTB[index][LRU].target_address=next_address;
-	return MISS; 
+	return MISS;
+	
+	 
 
 }
 // =====================================================================

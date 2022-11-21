@@ -1,0 +1,90 @@
+Testes: ASTAR
+End of dynamic simulation trace
+End of Simulation
+######################################################
+trace_reader_t
+fetch_instructions:200001517
+######################################################
+processor_t
+BTB MISSES = 512
+BTB HITS = 30524404
+Prediction HITS = 24147381
+Prediction MISSES = 6684054
+Prediction HITS percentage = 78.320652% 
+TOTAL CYCLES 306954574
+
+Testes CALCULIX
+End of dynamic simulation trace
+End of Simulation
+######################################################
+trace_reader_t
+fetch_instructions:200001551
+######################################################
+processor_t
+BTB MISSES = 253
+BTB HITS = 3170317
+Prediction HITS = 2805684
+Prediction MISSES = 756279
+Prediction HITS percentage = 78.767915% 
+TOTAL CYCLES 212106064
+
+Testes DEALII
+End of dynamic simulation trace
+End of Simulation
+######################################################
+trace_reader_t
+fetch_instructions:200001503
+######################################################
+processor_t
+BTB MISSES = 5822
+BTB HITS = 30604883
+Prediction HITS = 20506237
+Prediction MISSES = 1213428
+Prediction HITS percentage = 94.413229% 
+TOTAL CYCLES 219509504
+
+Testes GROMACS
+End of dynamic simulation trace
+End of Simulation
+######################################################
+trace_reader_t
+fetch_instructions:200001492
+######################################################
+processor_t
+BTB MISSES = 1148
+BTB HITS = 4576187
+Prediction HITS = 4228700
+Prediction MISSES = 501056
+Prediction HITS percentage = 89.406303% 
+TOTAL CYCLES 208036757
+
+Testes LIBQUANTUM
+End of dynamic simulation trace
+End of Simulation
+######################################################
+trace_reader_t
+fetch_instructions:200001503
+######################################################
+processor_t
+BTB MISSES = 58
+BTB HITS = 33368584
+Prediction HITS = 33368514
+Prediction MISSES = 1583482
+Prediction HITS percentage = 95.469552% 
+TOTAL CYCLES 225338144
+
+Testes NAMD
+End of dynamic simulation trace
+End of Simulation
+######################################################
+trace_reader_t
+fetch_instructions:200001502
+######################################################
+processor_t
+BTB MISSES = 1077
+BTB HITS = 35012325
+Prediction HITS = 27468367
+Prediction MISSES = 1615063
+Prediction HITS percentage = 94.446793% 
+TOTAL CYCLES 225859743
+

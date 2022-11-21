@@ -2,15 +2,20 @@
 
 // ============================================================================
 // ============================================================================
-#define HIT 1;
-#define MISS 0;
+#define BMISS 0
+#define BHIT 1
+#define PMISS 2
+#define PHIT 3
 class processor_t {
     private:    
 
     public:
 		BTB_cell_t BTB[1024][4];
 		int miss;
-		long miss_counter;		
+		long BTB_misses;
+		long BTB_hits;
+		long prediction_hits;
+		long prediction_misses;		
 		// ====================================================================
 		/// Methods
 		// ====================================================================

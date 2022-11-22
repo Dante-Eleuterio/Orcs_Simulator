@@ -14,6 +14,11 @@ void processor_t::allocate() {
 
 };
 
+int processor_t::cbp(){
+	
+}
+
+
 int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int64_t next_address){
 	uint64_t PC = instruction.opcode_address;
 	int index = PC & 1023; //Calculate tag
@@ -29,31 +34,31 @@ int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int6
 		for(int i = 0; i < 4; i++){
 			if(BTB[index][i].opcode_address==PC){ //check for hit or miss on BTB
 				BTB[index][i].last_access = orcs_engine.global_cycle;
-				if(BTB[index][i].two_bits==0 || BTB[index][i].two_bits==1){ //Predicted Not Taken
+				if(BTB[index][i].prediction==0 || BTB[index][i].prediction==1){ //Predicted Not Taken
 					if(next_address == PC+instruction.opcode_size){  //If not taken Sucess
 						BTB[index][i].target_address=PC+instruction.opcode_size;
-						if(BTB[index][i].two_bits>0){
-							BTB[index][i].two_bits--;
+						if(BTB[index][i].prediction>0){
+							BTB[index][i].prediction--;
 						}
 						return PHIT;
 					}else{											//If taken Fail
 						BTB[index][i].target_address=next_address;
-						if(BTB[index][i].two_bits<3){
-							BTB[index][i].two_bits++;
+						if(BTB[index][i].prediction<3){
+							BTB[index][i].prediction++;
 						}
 						return PMISS;
 					}
 				}else{ //Predicted Taken
 					if(next_address == PC+instruction.opcode_size){  //If not taken Fail
 						BTB[index][i].target_address=PC+instruction.opcode_size;
-						if(BTB[index][i].two_bits>0){
-							BTB[index][i].two_bits--;
+						if(BTB[index][i].prediction>0){
+							BTB[index][i].prediction--;
 						}
 						return PMISS;
 					}else{											//If taken Sucess
 						BTB[index][i].target_address=next_address;
-						if(BTB[index][i].two_bits<3){
-							BTB[index][i].two_bits++;
+						if(BTB[index][i].prediction<3){
+							BTB[index][i].prediction++;
 						}
 						return PHIT;
 					}
@@ -75,7 +80,7 @@ int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int6
 	}
 	BTB[index][LRU].last_access= orcs_engine.global_cycle;
 	BTB[index][LRU].opcode_address=PC;
-	BTB[index][LRU].two_bits=0;
+	BTB[index][LRU].prediction=0;
 	if(branch_type==4)
 		BTB[index][LRU].target_address=PC+instruction.opcode_size;
 	else

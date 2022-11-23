@@ -84,7 +84,7 @@ void CBP_t::update_cbp(int bank,uint64_t PC){
             update_Banks(PC,3-bank);
         }
     }
-
+    //FALTA ATUALIZAR O CSR 
 }
 
 int CBP_t::check_prediction(uint32_t size,int prediction,uint64_t PC,uint64_t next_address){

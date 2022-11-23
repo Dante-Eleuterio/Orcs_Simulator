@@ -61,9 +61,13 @@ class CBP_t {
         folded_history CSR_i[4];
         folded_history CSR_t[2][4];
         history_t ghist;
+        int hit;
+        int taken;
         CBP_t(){
             int bits=80;
             ghist=0;
+            hit=0;
+            taken=0;
             for (int i = 0; i < 4; i++){
                 CSR_i[i].init(bits,10);
                 CSR_t[0][i].init(CSR_i[i].OLENGTH,8);
@@ -71,11 +75,15 @@ class CBP_t {
                 bits/=2;
             }
         }
+        
         int get_prediction(uint32_t size,uint64_t PC,int *bankFound,uint64_t next_address);
         int check_Bimodal(uint64_t PC);
         int check_Bank(uint64_t PC,int bank);
-        int check_prediction(int prediction,uint32_t size,uint64_t PC,uint64_t next_address );
-        void update_cbp(int hit,int prediction,int bank,uint64_t PC);
-        void update_Bimodal(uint64_t PC,int taken);
+        int check_prediction(uint32_t size,int prediction,uint64_t PC,uint64_t next_address);
+        void update_cbp(int bank,uint64_t PC);
+        void update_Bimodal(uint64_t PC);
+        void update_Banks(uint64_t PC,int amount);
+        int calculate_index(uint64_t PC,int bank);
+        uint16_t calculate_tag(uint64_t PC,int bank);
 
 };

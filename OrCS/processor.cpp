@@ -18,7 +18,8 @@ int processor_t::handle_cbp(uint32_t size,uint64_t PC,uint64_t next_address){
 	int bankFound=-1;
 	int result=0;
 	result=CBP.get_prediction(size,PC,&bankFound,next_address);
-	
+	CBP.hit=result-2;
+	CBP.update_cbp(bankFound,PC);
 	return result;
 }
 

@@ -14,8 +14,47 @@ void processor_t::allocate() {
 
 };
 
-int processor_t::cbp(){
+int processor_t::handle_cbp(uint32_t size,uint64_t PC,uint64_t next_address){
+	int bankFound=-1;
+	int result=0;
+	result=CBP.get_prediction(size,PC,&bankFound,next_address);
 	
+	return result;
+}
+
+int processor_t::two_bits(opcode_package_t instruction, u_int64_t next_address,int i){
+	uint64_t PC = instruction.opcode_address;
+	int index = PC & 1023; //Calculate tag
+	
+	if(BTB[index][i].prediction==0 || BTB[index][i].prediction==1){ //Predicted Not Taken
+			if(next_address == PC+instruction.opcode_size){  //If not taken Sucess
+				BTB[index][i].target_address=PC+instruction.opcode_size;
+				if(BTB[index][i].prediction>0){
+					BTB[index][i].prediction--;
+				}
+				return PHIT;
+			}else{											//If taken Fail
+				BTB[index][i].target_address=next_address;
+				if(BTB[index][i].prediction<3){
+					BTB[index][i].prediction++;
+				}
+				return PMISS;
+			}
+		}else{ //Predicted Taken
+			if(next_address == PC+instruction.opcode_size){  //If not taken Fail
+				BTB[index][i].target_address=PC+instruction.opcode_size;
+				if(BTB[index][i].prediction>0){
+					BTB[index][i].prediction--;
+				}
+				return PMISS;
+			}else{											//If taken Sucess
+				BTB[index][i].target_address=next_address;
+				if(BTB[index][i].prediction<3){
+					BTB[index][i].prediction++;
+				}
+				return PHIT;
+			}
+	}
 }
 
 
@@ -34,35 +73,8 @@ int processor_t::handle_BTB(opcode_package_t instruction,int branch_type, u_int6
 		for(int i = 0; i < 4; i++){
 			if(BTB[index][i].opcode_address==PC){ //check for hit or miss on BTB
 				BTB[index][i].last_access = orcs_engine.global_cycle;
-				if(BTB[index][i].prediction==0 || BTB[index][i].prediction==1){ //Predicted Not Taken
-					if(next_address == PC+instruction.opcode_size){  //If not taken Sucess
-						BTB[index][i].target_address=PC+instruction.opcode_size;
-						if(BTB[index][i].prediction>0){
-							BTB[index][i].prediction--;
-						}
-						return PHIT;
-					}else{											//If taken Fail
-						BTB[index][i].target_address=next_address;
-						if(BTB[index][i].prediction<3){
-							BTB[index][i].prediction++;
-						}
-						return PMISS;
-					}
-				}else{ //Predicted Taken
-					if(next_address == PC+instruction.opcode_size){  //If not taken Fail
-						BTB[index][i].target_address=PC+instruction.opcode_size;
-						if(BTB[index][i].prediction>0){
-							BTB[index][i].prediction--;
-						}
-						return PMISS;
-					}else{											//If taken Sucess
-						BTB[index][i].target_address=next_address;
-						if(BTB[index][i].prediction<3){
-							BTB[index][i].prediction++;
-						}
-						return PHIT;
-					}
-				}
+				// return (two_bits(instruction,next_address,i));
+				return handle_cbp(instruction.opcode_size,PC,next_address);
 			}
 		}
 	}

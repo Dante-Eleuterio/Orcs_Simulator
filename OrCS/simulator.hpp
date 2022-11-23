@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <string>
 #include <cstring>
+#include <bitset>
 
 
 // ============================================================================
@@ -24,6 +25,7 @@ class trace_reader_t;
 class opcode_package_t;
 class processor_t;
 class BTB_cell_t;
+class CBP_t;
 // ============================================================================
 /// Global SINUCA_ENGINE instantiation
 // ============================================================================
@@ -128,8 +130,8 @@ enum branch_t {
 #include "./trace_reader.hpp"
 #include "./opcode_package.hpp"
 #include "./BTB_cell.hpp"
+#include "./CBP.hpp"
 #include "./processor.hpp"
-
 
 
 

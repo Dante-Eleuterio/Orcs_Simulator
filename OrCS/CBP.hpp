@@ -63,11 +63,13 @@ class CBP_t {
         history_t ghist;
         int hit;
         int taken;
+        int update_bits;
         CBP_t(){
             int bits=80;
             ghist=0;
             hit=0;
             taken=0;
+            update_bits=0;
             for (int i = 0; i < 4; i++){
                 CSR_i[i].init(bits,10);
                 CSR_t[0][i].init(CSR_i[i].OLENGTH,8);

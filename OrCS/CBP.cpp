@@ -12,7 +12,6 @@ uint16_t CBP_t::calculate_tag(uint64_t PC,int bank){
 
 void CBP_t::update_Bimodal(uint64_t PC){
     int index = PC & 4095;
-    Bimodal[index].m=hit; //Update the m bit
     if(taken){
         if(Bimodal[index].ctr<7)
             Bimodal[index].ctr++;
@@ -24,7 +23,10 @@ void CBP_t::update_Bimodal(uint64_t PC){
 
 int CBP_t::check_Bimodal(uint64_t PC){
     int index = PC & 4095;
-    return (Bimodal[index].ctr);
+    if(Bimodal[index].ctr<4)
+        return NTAKEN;
+    else
+        return TAKEN;
 }
 
 void CBP_t::update_Banks(uint64_t PC,int amount){
@@ -81,13 +83,28 @@ void CBP_t::update_cbp(int bank,uint64_t PC){
             update_Banks(PC,4);
         }
         else{
+            if(update_bits){ 
+                Bimodal[PC & 4095].m=hit; //Update the m bit
+                banks[bank].cell[calculate_tag(PC,bank)].u=hit; //Update the u bit
+                update_bits=0;
+            }
             update_Banks(PC,3-bank);
         }
     }
-    //FALTA ATUALIZAR O CSR 
+
+    ghist = (ghist<<1) | (history_t) taken;
+    
+    for (int i = 0; i < 4; i++){
+        CSR_i[i].update(ghist);
+        CSR_t[0][i].update(ghist);
+        CSR_t[1][i].update(ghist);
+    }
+    
 }
 
 int CBP_t::check_prediction(uint32_t size,int prediction,uint64_t PC,uint64_t next_address){
+    if(prediction!=check_Bimodal(PC))
+        update_bits=1;
     if(PC+size==next_address){
         taken=0;
         if(!prediction)
@@ -104,7 +121,6 @@ int CBP_t::check_prediction(uint32_t size,int prediction,uint64_t PC,uint64_t ne
 }
 
 int CBP_t::get_prediction(uint32_t size,uint64_t PC,int *bankFound,uint64_t next_address){
-    //CONFERIR SE A PREVISAO DO BANCO E DO BIMODAL SAO IGUAIS
     int b[4];
     for (int i = 0; i < 4; i++){
         b[i]=check_Bank(PC,i);
@@ -114,10 +130,7 @@ int CBP_t::get_prediction(uint32_t size,uint64_t PC,int *bankFound,uint64_t next
         }
     }
     if(*bankFound==-1){
-        if(check_Bimodal(PC)<4)
-            return check_prediction(size,NTAKEN,PC,next_address);
-        else
-            return check_prediction(size,TAKEN,PC,next_address);
+            return check_prediction(size,check_Bimodal(PC),PC,next_address);
     }else{
         if(b[*bankFound]<4)
             return check_prediction(size,NTAKEN,PC,next_address);

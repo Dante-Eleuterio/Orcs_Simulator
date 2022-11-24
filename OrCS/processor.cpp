@@ -172,9 +172,11 @@ void processor_t::clock() {
 		case PMISS:
 			miss=16;
 			prediction_misses++;
+			BTB_hits++;
 			break;
 		case PHIT:
 			prediction_hits++;
+			BTB_hits++;
 			break;
 		default:
 			break;
@@ -190,7 +192,7 @@ void processor_t::statistics() {
 	ORCS_PRINTF("######################################################\n");
 	ORCS_PRINTF("processor_t\n");
 	ORCS_PRINTF("BTB MISSES = %ld\n",BTB_misses);
-	ORCS_PRINTF("BTB HITS = %ld\n",BTB_hits+prediction_hits);
+	ORCS_PRINTF("BTB HITS = %ld\n",BTB_hits);
 	ORCS_PRINTF("Prediction HITS = %ld\n",prediction_hits);
 	ORCS_PRINTF("Prediction MISSES = %ld\n",prediction_misses);
 	ORCS_PRINTF("Prediction HITS percentage = %f%c \n",division,'%');

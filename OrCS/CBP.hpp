@@ -1,7 +1,5 @@
-#include "simulator.hpp"
-
 using namespace std;
-typedef bitset<81> history_t;
+typedef bitset<80> history_t;
 #define NTAKEN 0
 #define TAKEN 1
 
@@ -37,15 +35,15 @@ class CBP_t {
                 ctr=3;
                 m=0;
             };
-            int8_t ctr;
+            int ctr;
             int m;
         };
         class Bank_t{
             public:
             class Bank_cell{
                 public:
-                int8_t ctr;
-                uint16_t tag;
+                int ctr;
+                int tag;
                 int u;
                 Bank_cell(){
                     ctr=3;
@@ -73,7 +71,7 @@ class CBP_t {
             for (int i = 0; i < 4; i++){
                 CSR_i[i].init(bits,10);
                 CSR_t[0][i].init(CSR_i[i].OLENGTH,8);
-                CSR_t[0][i].init(CSR_i[i].OLENGTH,7);
+                CSR_t[1][i].init(CSR_i[i].OLENGTH,7);
                 bits/=2;
             }
         }
@@ -86,6 +84,7 @@ class CBP_t {
         void update_Bimodal(uint64_t PC);
         void update_Banks(uint64_t PC,int amount);
         int calculate_index(uint64_t PC,int bank);
-        uint16_t calculate_tag(uint64_t PC,int bank);
+        int calculate_tag(uint64_t PC,int bank);
+
 
 };

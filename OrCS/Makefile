@@ -35,7 +35,7 @@ OBJS = $(OBJS_CORE)
 
 ########################################################
 
-all: orcs
+all: clean orcs
 
 orcs: $(OBJS_CORE)
 	$(LD) $(LDFLAGS) -o $(BIN_NAME) $(OBJS) $(LIBRARY)

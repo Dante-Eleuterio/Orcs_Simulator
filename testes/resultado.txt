@@ -8,83 +8,9 @@ fetch_instructions:200001517
 processor_t
 BTB MISSES = 512
 BTB HITS = 37208458
-Prediction HITS = 12427072
-Prediction MISSES = 18404363
-Prediction HITS percentage = 40.306499% 
-TOTAL CYCLES 494479518
+Prediction HITS = 29982758
+Prediction MISSES = 848677
+Prediction HITS percentage = 97.247365% 
+TOTAL CYCLES 213588542
 
 Testes CALCULIX
-End of dynamic simulation trace
-End of Simulation
-######################################################
-trace_reader_t
-fetch_instructions:200001551
-######################################################
-processor_t
-BTB MISSES = 253
-BTB HITS = 3926596
-Prediction HITS = 2490802
-Prediction MISSES = 1071161
-Prediction HITS percentage = 69.927790% 
-TOTAL CYCLES 217144176
-
-Testes DEALII
-End of dynamic simulation trace
-End of Simulation
-######################################################
-trace_reader_t
-fetch_instructions:200001503
-######################################################
-processor_t
-BTB MISSES = 5822
-BTB HITS = 31818311
-Prediction HITS = 9441922
-Prediction MISSES = 12277743
-Prediction HITS percentage = 43.471766% 
-TOTAL CYCLES 396538544
-
-Testes GROMACS
-End of dynamic simulation trace
-End of Simulation
-######################################################
-trace_reader_t
-fetch_instructions:200001492
-######################################################
-processor_t
-BTB MISSES = 1148
-BTB HITS = 5077243
-Prediction HITS = 2176815
-Prediction MISSES = 2552941
-Prediction HITS percentage = 46.023833% 
-TOTAL CYCLES 240866917
-
-Testes LIBQUANTUM
-End of dynamic simulation trace
-End of Simulation
-######################################################
-trace_reader_t
-fetch_instructions:200001503
-######################################################
-processor_t
-BTB MISSES = 58
-BTB HITS = 34952066
-Prediction HITS = 32596859
-Prediction MISSES = 2355137
-Prediction HITS percentage = 93.261795% 
-TOTAL CYCLES 237684624
-
-Testes NAMD
-End of dynamic simulation trace
-End of Simulation
-######################################################
-trace_reader_t
-fetch_instructions:200001502
-######################################################
-processor_t
-BTB MISSES = 1077
-BTB HITS = 36627388
-Prediction HITS = 12304925
-Prediction MISSES = 16778505
-Prediction HITS percentage = 42.309057% 
-TOTAL CYCLES 468474815
-

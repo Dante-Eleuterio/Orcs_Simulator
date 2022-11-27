@@ -64,6 +64,7 @@ static void process_argv(int argc, char **argv) {
 
 // =============================================================================
 int main(int argc, char **argv) {
+    srand((unsigned) time(NULL));
     process_argv(argc, argv);
 
     /// Call all the allocate's
